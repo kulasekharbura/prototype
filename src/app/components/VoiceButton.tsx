@@ -103,14 +103,12 @@ export function VoiceButton({ onTranscription, disabled }: VoiceButtonProps) {
         size="icon"
         onClick={handleClick}
         disabled={disabled}
-        className={`
-          rounded-full h-12 w-12 transition-all duration-200
-          ${
-            isListening
-              ? 'bg-red-500 text-white hover:bg-red-600 animate-pulse scale-110'
-              : 'bg-orange-100 text-orange-600 hover:bg-orange-200'
-          }
-        `}
+        className={[
+          'rounded-full h-11 w-11 transition-all duration-200',
+          isListening
+            ? 'bg-[var(--color-error-text)] text-white animate-pulse scale-110'
+            : 'bg-[var(--color-shop-50)] text-[var(--color-shop-600)] border border-[var(--color-shop-200)] hover:bg-[var(--color-shop-100)]',
+        ].join(' ')}
         aria-label={isListening ? 'Stop listening' : 'Start voice input'}
         title={isListening ? 'Tap to stop' : 'Speak your situation'}
       >
@@ -118,14 +116,14 @@ export function VoiceButton({ onTranscription, disabled }: VoiceButtonProps) {
       </Button>
 
       {isListening && (
-        <span className="text-xs text-red-500 font-medium animate-pulse">
-          Listening...
+        <span className="text-xs text-[var(--color-error-text)] font-medium animate-pulse">
+          Listening…
         </span>
       )}
 
       {error && (
         <div className="flex flex-col items-center gap-1 mt-1">
-          <span className="text-xs text-red-600">{error}</span>
+          <span className="text-xs text-[var(--color-error-text)] text-center">{error}</span>
           <Button
             type="button"
             variant="link"

@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "./providers/CartProvider";
+import { ThemeProvider } from "./providers/ThemeProvider";
 import { Navigation } from "./components/Navigation";
 
 const inter = Inter({
@@ -23,12 +24,14 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-white text-[#131A22]">
-        <CartProvider>
-          <Navigation />
-          <main className="flex-1">{children}</main>
-        </CartProvider>
+    <html lang="en" className={`${inter.variable} h-full antialiased`} suppressHydrationWarning>
+      <body className="min-h-full flex flex-col bg-surface-page text-primary">
+        <ThemeProvider>
+          <CartProvider>
+            <Navigation />
+            <main className="flex-1">{children}</main>
+          </CartProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -14,7 +14,6 @@ interface CartDisplayProps {
 }
 
 export function CartDisplay({ items, onQuantityChange, onRemove, onSwap, intentLabels }: CartDisplayProps) {
-  // Group items by category
   const groupedItems = items.reduce<Record<string, CartItemType[]>>((acc, item) => {
     const category = item.category || 'Other';
     if (!acc[category]) acc[category] = [];
@@ -26,47 +25,59 @@ export function CartDisplay({ items, onQuantityChange, onRemove, onSwap, intentL
 
   if (items.length === 0) {
     return (
-      <div className="w-full max-w-2xl mx-auto text-center py-8">
-        <p className="text-[#565959]">No items in cart.</p>
+      <div className="text-center py-10">
+        <p className="text-sm text-[var(--text-muted)]">No items in cart.</p>
       </div>
     );
   }
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardContent className="p-5 space-y-5">
-        {intentLabels && intentLabels.length > 1 && (
-          <div className="mb-4 p-3 bg-[#F7F8FA] rounded-lg border border-[#D5D9D9]">
-            <p className="text-xs font-medium text-[#565959] mb-2">Detected Intents:</p>
-            <div className="flex flex-wrap gap-2">
-              {intentLabels.map((label, idx) => (
-                <Badge key={idx} variant="default">{label}</Badge>
-              ))}
-            </div>
+    <div className="space-y-1">
+      {/* Multi-intent labels */}
+      {intentLabels && intentLabels.length > 1 && (
+        <div
+          className={[
+            'rounded-xl border border-[var(--color-ai-border)]',
+            'bg-[var(--color-ai-surface)]',
+            'px-4 py-3 mb-4',
+          ].join(' ')}
+        >
+          <p className="text-xs font-medium text-[var(--text-muted)] uppercase tracking-wide mb-2">
+            Detected intents
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {intentLabels.map((label, idx) => (
+              <Badge key={idx} variant="ai">{label}</Badge>
+            ))}
           </div>
-        )}
-        {categories.map((category) => (
-          <div key={category}>
-            <div className="flex items-center gap-2 mb-2.5">
-              <Badge variant="secondary" className="text-xs uppercase tracking-wider">
-                {category}
-              </Badge>
-              <span className="text-xs text-[#565959]">({groupedItems[category].length})</span>
-            </div>
-            <div>
-              {groupedItems[category].map((item) => (
-                <CartItem
-                  key={item.id}
-                  item={item}
-                  onQuantityChange={onQuantityChange}
-                  onRemove={onRemove}
-                  onSwap={onSwap}
-                />
-              ))}
-            </div>
+        </div>
+      )}
+
+      {/* Category groups */}
+      {categories.map((category) => (
+        <Card key={category} className="overflow-hidden">
+          {/* Category header */}
+          <div className="flex items-center gap-2 px-5 pt-4 pb-1">
+            <span className="text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+              {category}
+            </span>
+            <span className="text-xs text-[var(--text-muted)]">
+              ({groupedItems[category].length})
+            </span>
           </div>
-        ))}
-      </CardContent>
-    </Card>
+          <CardContent className="px-5 pb-2 pt-0">
+            {groupedItems[category].map((item) => (
+              <CartItem
+                key={item.id}
+                item={item}
+                onQuantityChange={onQuantityChange}
+                onRemove={onRemove}
+                onSwap={onSwap}
+              />
+            ))}
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   );
 }

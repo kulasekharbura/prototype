@@ -11,6 +11,7 @@ interface CartContextType {
   lastDescription: string;
   userId: string | null;
   householdProfile: HouseholdProfile | null;
+  journeyStartTime: number | null;
 
   // Actions
   setCart: (cart: GeneratedCart) => void;
@@ -24,6 +25,7 @@ interface CartContextType {
   setLastDescription: (desc: string) => void;
   setUserId: (id: string) => void;
   setHouseholdProfile: (profile: HouseholdProfile) => void;
+  setJourneyStartTime: (ts: number) => void;
   computeTotal: () => number;
   itemCount: number;
 }
@@ -37,6 +39,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [lastDescription, setLastDescriptionState] = useState('');
   const [userId, setUserIdState] = useState<string | null>(null);
   const [householdProfile, setHouseholdProfileState] = useState<HouseholdProfile | null>(null);
+  const [journeyStartTime, setJourneyStartTimeState] = useState<number | null>(null);
 
   useEffect(() => {
     const stored = localStorage.getItem('swiftcart_user_id');
@@ -69,6 +72,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setCartState(null);
     setIntentLabelsState([]);
     setLastDescriptionState('');
+    setJourneyStartTimeState(null);
   };
 
   const setUserId = (id: string) => {
@@ -91,6 +95,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       lastDescription,
       userId,
       householdProfile,
+      journeyStartTime,
       setCart: setCartState,
       setItems: setItemsState,
       addItem,
@@ -102,6 +107,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       setLastDescription: setLastDescriptionState,
       setUserId,
       setHouseholdProfile,
+      setJourneyStartTime: setJourneyStartTimeState,
       computeTotal,
       itemCount: items.length,
     }}>

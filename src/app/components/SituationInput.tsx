@@ -1,10 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Loader2, Sparkles } from 'lucide-react';
+import { Loader2, Sparkles, ArrowRight } from 'lucide-react';
 
 interface SituationInputProps {
   onSubmit: (description: string) => void;
@@ -28,16 +27,14 @@ export function SituationInput({ onSubmit, isLoading, value, onChange }: Situati
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-
     if (!value.trim()) {
-      setError('Please describe your situation. The input cannot be empty.');
+      setError('Please describe your situation first.');
       return;
     }
     if (value.length > 500) {
-      setError('Description must be 500 characters or fewer.');
+      setError('Keep it under 500 characters.');
       return;
     }
-
     onSubmit(value);
   };
 
@@ -47,86 +44,94 @@ export function SituationInput({ onSubmit, isLoading, value, onChange }: Situati
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <Card>
-        <CardContent className="p-5">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label
-                htmlFor="situation-input"
-                className="block text-sm font-medium text-[#131A22] mb-2"
-              >
-                Describe your situation
-              </label>
-              <Textarea
-                id="situation-input"
-                value={value}
-                onChange={(e) => {
-                  onChange(e.target.value);
-                  if (error) setError(null);
-                }}
-                placeholder="What's the occasion? Tell us what you need..."
-                maxLength={500}
-                rows={3}
-                disabled={isLoading}
-                className="text-base"
-                aria-describedby="char-count input-error"
-              />
-              <div className="flex justify-between items-center mt-1.5">
-                {error && (
-                  <p id="input-error" className="text-sm text-red-600" role="alert">
-                    {error}
-                  </p>
-                )}
-                <p
-                  id="char-count"
-                  className="text-xs text-[#565959] ml-auto"
-                  aria-live="polite"
-                >
-                  {value.length}/500
-                </p>
-              </div>
-            </div>
-
-            <Button
-              type="submit"
-              disabled={isLoading || !value.trim()}
-              size="lg"
-              className="w-full"
+    <div className="w-full">
+      <form onSubmit={handleSubmit} className="space-y-3">
+        {/* Textarea */}
+        <div>
+          <Textarea
+            id="situation-input"
+            value={value}
+            onChange={(e) => {
+              onChange(e.target.value);
+              if (error) setError(null);
+            }}
+            placeholder="e.g. 'making biryani for 8 people' or 'guests arriving tonight for snacks and drinks'…"
+            maxLength={500}
+            rows={3}
+            disabled={isLoading}
+            className="text-base leading-relaxed resize-none"
+            aria-describedby="char-count input-error"
+          />
+          <div className="flex justify-between items-center mt-1.5 px-0.5">
+            {error ? (
+              <p id="input-error" className="text-sm text-[var(--color-error-text)]" role="alert">
+                {error}
+              </p>
+            ) : <span />}
+            <p
+              id="char-count"
+              className={[
+                'text-xs ml-auto tabular-nums transition-colors',
+                value.length > 450 ? 'text-[var(--color-warning-text)]' : 'text-[var(--text-muted)]',
+              ].join(' ')}
+              aria-live="polite"
             >
-              {isLoading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  Generating your cart...
-                </span>
-              ) : (
-                <span className="flex items-center justify-center gap-2">
-                  <Sparkles className="h-5 w-5" />
-                  Generate Smart Cart
-                </span>
-              )}
-            </Button>
-          </form>
-
-          {/* Example prompts */}
-          <div className="mt-5 pt-4 border-t border-[#D5D9D9]">
-            <p className="text-sm text-[#565959] mb-2.5">Try an example:</p>
-            <div className="flex flex-wrap gap-2">
-              {EXAMPLE_PROMPTS.map((prompt) => (
-                <button
-                  key={prompt}
-                  type="button"
-                  onClick={() => handleExampleClick(prompt)}
-                  disabled={isLoading}
-                  className="px-3 py-1.5 text-xs font-medium rounded-md bg-[#F7F8FA] text-[#565959] border border-[#D5D9D9] hover:border-[#FF9900] transition-colors disabled:opacity-50 cursor-pointer"
-                >
-                  {prompt}
-                </button>
-              ))}
-            </div>
+              {value.length}/500
+            </p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+
+        {/* CTA — amber/shop variant */}
+        <Button
+          type="submit"
+          disabled={isLoading || !value.trim()}
+          variant="shop"
+          size="lg"
+          className="w-full group text-base"
+        >
+          {isLoading ? (
+            <span className="flex items-center justify-center gap-2">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Generating your cart…</span>
+            </span>
+          ) : (
+            <span className="flex items-center justify-center gap-2">
+              <Sparkles className="h-4 w-4" />
+              <span>Generate Smart Cart</span>
+              <ArrowRight className="h-4 w-4 opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-150" />
+            </span>
+          )}
+        </Button>
+      </form>
+
+      {/* Example prompts — bigger, more prominent */}
+      <div className="mt-5">
+        <p className="text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)] mb-3">
+          Try an example
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {EXAMPLE_PROMPTS.map((prompt) => (
+            <button
+              key={prompt}
+              type="button"
+              onClick={() => handleExampleClick(prompt)}
+              disabled={isLoading}
+              className={[
+                'px-4 py-2 text-sm rounded-lg font-medium',
+                'bg-[var(--surface-raised)] text-[var(--text-secondary)]',
+                'border border-[var(--border-default)]',
+                'hover:border-[var(--color-accent-500)]',
+                'hover:text-[var(--color-accent-600)]',
+                'hover:bg-[var(--color-accent-50)]',
+                'transition-all duration-150 cursor-pointer',
+                'disabled:opacity-40 disabled:pointer-events-none',
+              ].join(' ')}
+            >
+              {prompt}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

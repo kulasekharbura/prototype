@@ -1,72 +1,348 @@
 @import "tailwindcss";
 
+/* ─── Design Tokens: Light Mode ─────────────────────────────────────────── */
 :root {
-  --background: #FFFFFF;
-  --foreground: #131A22;
-  --secondary-text: #565959;
-  --accent: #FF9900;
-  --cta: #FFD814;
-  --cta-hover: #F7CA00;
-  --border: #D5D9D9;
-  --surface: #F7F8FA;
-  --success: #067D62;
-  --link: #007185;
+  /* Neutral scale */
+  --color-neutral-0:   #FFFFFF;
+  --color-neutral-50:  #F8F8FB;
+  --color-neutral-100: #F1F1F6;
+  --color-neutral-200: #E2E2EA;
+  --color-neutral-300: #C8C8D4;
+  --color-neutral-500: #8A8A9A;
+  --color-neutral-700: #4A4A5A;
+  --color-neutral-900: #0F0F1A;
+
+  /* AI Accent — Indigo/Violet (used ONLY for AI elements) */
+  --color-accent-50:  #F0EFFE;
+  --color-accent-100: #E3E0FD;
+  --color-accent-200: #C7C3F9;
+  --color-accent-500: #6B66F2;
+  --color-accent-600: #5651D6;
+  --color-accent-700: #4540B8;
+
+  /* Shopping Accent — Warm Amber/Orange (CTAs, prices, cart, delivery) */
+  --color-shop-50:   #FFF8F0;
+  --color-shop-100:  #FFECD6;
+  --color-shop-200:  #FFD4A8;
+  --color-shop-400:  #F59332;
+  --color-shop-500:  #E8820C;
+  --color-shop-600:  #CC6F06;
+  --color-shop-700:  #A85A04;
+
+  /* Semantic — success */
+  --color-success-surface: #F0FDF4;
+  --color-success-text:    #15803D;
+  --color-success-border:  #BBF7D0;
+
+  /* Semantic — warning */
+  --color-warning-surface: #FFFBEB;
+  --color-warning-text:    #B45309;
+  --color-warning-border:  #FDE68A;
+
+  /* Semantic — error */
+  --color-error-surface: #FFF1F2;
+  --color-error-text:    #BE123C;
+  --color-error-border:  #FECDD3;
+
+  /* Semantic — AI (violet tint) */
+  --color-ai-surface: #F5F0FF;
+  --color-ai-text:    #6B21A8;
+  --color-ai-border:  #DDD6FE;
+
+  /* ─── Semantic surface tokens ─── */
+  --surface-page:    var(--color-neutral-0);
+  --surface-card:    var(--color-neutral-0);
+  --surface-raised:  var(--color-neutral-50);
+  --surface-subtle:  var(--color-neutral-100);
+  --surface-overlay: var(--color-neutral-0);
+
+  --border-default:  var(--color-neutral-200);
+  --border-strong:   var(--color-neutral-300);
+  --border-focus:    var(--color-accent-500);
+
+  --text-primary:    var(--color-neutral-900);
+  --text-secondary:  var(--color-neutral-700);
+  --text-muted:      var(--color-neutral-500);
+  --text-link:       var(--color-accent-500);
+  --text-link-hover: var(--color-accent-700);
+
+  /* Shopping CTA tokens */
+  --btn-shop-bg:       var(--color-shop-500);
+  --btn-shop-hover:    var(--color-shop-600);
+  --btn-shop-active:   var(--color-shop-700);
+  --btn-shop-text:     #FFFFFF;
+
+  --price-color:       var(--color-shop-600);
+  --price-strong:      var(--color-shop-700);
+
+  /* Shadows — warm-neutral */
+  --shadow-xs: 0 1px 2px rgba(15, 15, 26, 0.04);
+  --shadow-sm: 0 1px 3px rgba(15, 15, 26, 0.06), 0 1px 2px rgba(15, 15, 26, 0.04);
+  --shadow-md: 0 4px 8px rgba(15, 15, 26, 0.06), 0 2px 4px rgba(15, 15, 26, 0.04);
+  --shadow-lg: 0 10px 20px rgba(15, 15, 26, 0.08), 0 4px 8px rgba(15, 15, 26, 0.05);
 }
 
+/* ─── Design Tokens: Dark Mode ───────────────────────────────────────────── */
+.dark {
+  /* Neutral scale */
+  --color-neutral-0:   #0A0A0F;
+  --color-neutral-50:  #111118;
+  --color-neutral-100: #18181F;
+  --color-neutral-200: #26262F;
+  --color-neutral-300: #3A3A47;
+  --color-neutral-500: #6E6E82;
+  --color-neutral-700: #B0B0C4;
+  --color-neutral-900: #EEEEF5;
+
+  /* AI Accent — Indigo/Violet (lighter in dark) */
+  --color-accent-50:  #1A1830;
+  --color-accent-100: #221F40;
+  --color-accent-200: #3D3880;
+  --color-accent-500: #7B77F5;
+  --color-accent-600: #6B66F2;
+  --color-accent-700: #5651D6;
+
+  /* Shopping Accent — Warm Amber (slightly brightened for dark) */
+  --color-shop-50:   #1E1208;
+  --color-shop-100:  #2E1C0A;
+  --color-shop-200:  #4A2E10;
+  --color-shop-400:  #F59332;
+  --color-shop-500:  #F59332;
+  --color-shop-600:  #E8820C;
+  --color-shop-700:  #CC6F06;
+
+  /* Semantic — success */
+  --color-success-surface: #0D2818;
+  --color-success-text:    #4ADE80;
+  --color-success-border:  #166534;
+
+  /* Semantic — warning */
+  --color-warning-surface: #1C1507;
+  --color-warning-text:    #FCD34D;
+  --color-warning-border:  #78350F;
+
+  /* Semantic — error */
+  --color-error-surface: #1C0507;
+  --color-error-text:    #FB7185;
+  --color-error-border:  #9F1239;
+
+  /* Semantic — AI */
+  --color-ai-surface: #150E2E;
+  --color-ai-text:    #C084FC;
+  --color-ai-border:  #4C1D95;
+
+  /* ─── Semantic surface tokens ─── */
+  --surface-page:    var(--color-neutral-0);
+  --surface-card:    var(--color-neutral-100);
+  --surface-raised:  var(--color-neutral-50);
+  --surface-subtle:  var(--color-neutral-200);
+  --surface-overlay: var(--color-neutral-100);
+
+  --border-default:  var(--color-neutral-200);
+  --border-strong:   var(--color-neutral-300);
+  --border-focus:    var(--color-accent-500);
+
+  --text-primary:    var(--color-neutral-900);
+  --text-secondary:  var(--color-neutral-700);
+  --text-muted:      var(--color-neutral-500);
+  --text-link:       var(--color-accent-500);
+  --text-link-hover: var(--color-accent-600);
+
+  --btn-shop-bg:       var(--color-shop-500);
+  --btn-shop-hover:    var(--color-shop-600);
+  --btn-shop-active:   var(--color-shop-700);
+  --btn-shop-text:     #FFFFFF;
+
+  --price-color:       var(--color-shop-400);
+  --price-strong:      var(--color-shop-500);
+
+  /* Shadows — deeper for dark mode */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.20);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.30), 0 1px 2px rgba(0, 0, 0, 0.20);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.35), 0 2px 4px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.40), 0 4px 8px rgba(0, 0, 0, 0.30);
+}
+
+/* ─── Tailwind theme bridge ──────────────────────────────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--surface-page);
+  --color-foreground: var(--text-primary);
   --font-sans: var(--font-inter);
+  --font-size-base: 15px;
+
+  /* Expose tokens as Tailwind utilities */
+  --color-surface-page:    var(--surface-page);
+  --color-surface-card:    var(--surface-card);
+  --color-surface-raised:  var(--surface-raised);
+  --color-surface-subtle:  var(--surface-subtle);
+
+  --color-border-default:  var(--border-default);
+  --color-border-strong:   var(--border-strong);
+  --color-border-focus:    var(--border-focus);
+
+  --color-text-primary:    var(--text-primary);
+  --color-text-secondary:  var(--text-secondary);
+  --color-text-muted:      var(--text-muted);
+  --color-text-link:       var(--text-link);
+
+  --color-accent-50:  var(--color-accent-50);
+  --color-accent-100: var(--color-accent-100);
+  --color-accent-200: var(--color-accent-200);
+  --color-accent-500: var(--color-accent-500);
+  --color-accent-600: var(--color-accent-600);
+  --color-accent-700: var(--color-accent-700);
+
+  --color-success-surface: var(--color-success-surface);
+  --color-success-text:    var(--color-success-text);
+  --color-success-border:  var(--color-success-border);
+
+  --color-warning-surface: var(--color-warning-surface);
+  --color-warning-text:    var(--color-warning-text);
+  --color-warning-border:  var(--color-warning-border);
+
+  --color-error-surface:   var(--color-error-surface);
+  --color-error-text:      var(--color-error-text);
+  --color-error-border:    var(--color-error-border);
+
+  --color-ai-surface: var(--color-ai-surface);
+  --color-ai-text:    var(--color-ai-text);
+  --color-ai-border:  var(--color-ai-border);
+
+  /* Shopping accent exposed to Tailwind */
+  --color-shop-50:  var(--color-shop-50);
+  --color-shop-100: var(--color-shop-100);
+  --color-shop-200: var(--color-shop-200);
+  --color-shop-400: var(--color-shop-400);
+  --color-shop-500: var(--color-shop-500);
+  --color-shop-600: var(--color-shop-600);
+  --color-shop-700: var(--color-shop-700);
+  --price-color:    var(--price-color);
+  --price-strong:   var(--price-strong);
+
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
 }
 
+/* ─── Base styles ────────────────────────────────────────────────────────── */
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--surface-page);
+  color: var(--text-primary);
   font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* State transition animations */
+/* ─── Utility classes ────────────────────────────────────────────────────── */
+
+/* Surfaces */
+.bg-surface-page    { background-color: var(--surface-page); }
+.bg-surface-card    { background-color: var(--surface-card); }
+.bg-surface-raised  { background-color: var(--surface-raised); }
+.bg-surface-subtle  { background-color: var(--surface-subtle); }
+
+/* Borders */
+.border-default { border-color: var(--border-default); }
+.border-strong  { border-color: var(--border-strong); }
+
+/* Text */
+.text-primary   { color: var(--text-primary); }
+.text-secondary { color: var(--text-secondary); }
+.text-muted-token { color: var(--text-muted); }
+.text-link      { color: var(--text-link); }
+
+/* Shadows */
+.shadow-card  { box-shadow: var(--shadow-sm); }
+.shadow-raised { box-shadow: var(--shadow-md); }
+.shadow-overlay { box-shadow: var(--shadow-lg); }
+
+/* AI surface */
+.bg-ai-surface  { background-color: var(--color-ai-surface); }
+.border-ai      { border-color: var(--color-ai-border); }
+.text-ai        { color: var(--color-ai-text); }
+
+/* Success surface */
+.bg-success-surface { background-color: var(--color-success-surface); }
+.border-success     { border-color: var(--color-success-border); }
+.text-success       { color: var(--color-success-text); }
+
+/* Warning surface */
+.bg-warning-surface { background-color: var(--color-warning-surface); }
+.border-warning     { border-color: var(--color-warning-border); }
+.text-warning       { color: var(--color-warning-text); }
+
+/* Error surface */
+.bg-error-surface { background-color: var(--color-error-surface); }
+.border-error     { border-color: var(--color-error-border); }
+.text-error       { color: var(--color-error-text); }
+
+/* Shopping accent */
+.bg-shop-50  { background-color: var(--color-shop-50); }
+.bg-shop-100 { background-color: var(--color-shop-100); }
+.bg-shop-500 { background-color: var(--color-shop-500); }
+.text-shop   { color: var(--color-shop-500); }
+.text-price  { color: var(--price-color); }
+.text-price-strong { color: var(--price-strong); }
+.border-shop { border-color: var(--color-shop-200); }
+
+/* btn-shop — shopping CTA (amber/orange) */
+.btn-shop {
+  background-color: var(--btn-shop-bg);
+  color: var(--btn-shop-text);
+}
+.btn-shop:hover  { background-color: var(--btn-shop-hover); }
+.btn-shop:active { background-color: var(--btn-shop-active); }
+
+/* ─── Animations ─────────────────────────────────────────────────────────── */
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeIn {
   from { opacity: 0; }
-  to { opacity: 1; }
+  to   { opacity: 1; }
 }
 
-@keyframes bounce-in {
-  0% {
-    transform: scale(0.3);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  70% {
-    transform: scale(0.9);
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+@keyframes bounceIn {
+  0%   { transform: scale(0.3); opacity: 0; }
+  50%  { transform: scale(1.05); }
+  70%  { transform: scale(0.97); }
+  100% { transform: scale(1); opacity: 1; }
 }
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.4s ease-out forwards;
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
-.animate-bounce-in {
-  animation: bounce-in 0.6s ease-out forwards;
+.animate-fade-in-up  { animation: fadeInUp 0.3s ease-out forwards; }
+.animate-fade-in     { animation: fadeIn 0.25s ease-out forwards; }
+.animate-bounce-in   { animation: bounceIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+/* Staggered item entrance */
+.animate-item-1 { animation: fadeInUp 0.3s ease-out 0.03s both; }
+.animate-item-2 { animation: fadeInUp 0.3s ease-out 0.06s both; }
+.animate-item-3 { animation: fadeInUp 0.3s ease-out 0.09s both; }
+.animate-item-4 { animation: fadeInUp 0.3s ease-out 0.12s both; }
+.animate-item-5 { animation: fadeInUp 0.3s ease-out 0.15s both; }
+
+/* Skeleton shimmer */
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--surface-subtle) 25%,
+    var(--border-default) 50%,
+    var(--surface-subtle) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
 }

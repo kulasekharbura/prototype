@@ -11,11 +11,15 @@ import { SessionHistory } from './components/SessionHistory';
 import { ProductCatalog } from './components/ProductCatalog';
 import { useCart } from './providers/CartProvider';
 import { Product } from '@/types/index';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Clock, ShieldCheck, Zap } from 'lucide-react';
 
 export default function HomePage() {
   const router = useRouter();
-  const { addItem, setCart, setItems, setIntentLabels, setLastDescription, userId, householdProfile, setHouseholdProfile, items, intentLabels: existingLabels } = useCart();
+  const {
+    addItem, setCart, setItems, setIntentLabels, setLastDescription,
+    userId, householdProfile, setHouseholdProfile, items,
+    intentLabels: existingLabels, setJourneyStartTime,
+  } = useCart();
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,6 +29,7 @@ export default function HomePage() {
     setIsLoading(true);
     setError(null);
     setLastDescription(description);
+    setJourneyStartTime(Date.now()); // ← start the journey clock
 
     try {
       const additionalContext: Record<string, unknown> = {};
@@ -46,18 +51,15 @@ export default function HomePage() {
       if (!data.success) throw new Error(data.error || 'Failed to generate cart');
 
       setCart(data.cart);
-      
-      // MERGE: append new items to existing cart (don't replace)
+
       const newItems = data.cart.items;
       if (items.length > 0) {
-        // Merge: combine duplicates by product name
         const merged = [...items];
         for (const newItem of newItems) {
           const existingIndex = merged.findIndex(
             i => i.productName.toLowerCase() === newItem.productName.toLowerCase()
           );
           if (existingIndex >= 0) {
-            // Duplicate found — add quantities
             merged[existingIndex] = {
               ...merged[existingIndex],
               quantity: merged[existingIndex].quantity + newItem.quantity,
@@ -70,13 +72,11 @@ export default function HomePage() {
       } else {
         setItems(newItems);
       }
-      
-      // Append new intent labels to existing ones
+
       const newLabels = data.intentLabels || [];
       const combinedLabels = [...existingLabels, ...newLabels.filter((l: string) => !existingLabels.includes(l))];
       setIntentLabels(combinedLabels);
 
-      // Navigate to cart page
       router.push('/cart');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
@@ -95,50 +95,118 @@ export default function HomePage() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-6 md:py-10">
-      {/* AI Section — Hero */}
-      <section className="mb-8">
-        <div className="flex items-center gap-2 mb-4">
-          <Sparkles className="h-5 w-5 text-[#FF9900]" />
-          <h2 className="text-xl font-bold text-[#131A22]">AI Shopping Assistant</h2>
+    <div className="max-w-5xl mx-auto px-4 md:px-6 py-8 md:py-12 space-y-14">
+
+      {/* ── AI Hero ── */}
+      <section>
+        {/* Top label */}
+        <div className="flex items-center gap-2 mb-5">
+          <div className="h-6 w-6 rounded-md bg-[var(--color-accent-50)] flex items-center justify-center border border-[var(--color-accent-200)]">
+            <Sparkles className="h-3.5 w-3.5 text-[var(--color-accent-500)]" />
+          </div>
+          <span className="text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)]">
+            AI Shopping Assistant
+          </span>
         </div>
 
-        <HouseholdProfilePanel onProfileChange={setHouseholdProfile} />
+        {/* Hero card */}
+        <div className={[
+          'rounded-2xl border border-[var(--border-default)]',
+          'bg-[var(--surface-card)] shadow-[var(--shadow-md)]',
+          'p-7 md:p-10',
+          'space-y-7',
+        ].join(' ')}>
 
-        {error && (
-          <div className="mb-4">
-            <ErrorBanner message={error} onRetry={() => { if (inputValue) handleSubmit(inputValue); }} onDismiss={() => setError(null)} />
+          {/* Headline */}
+          <div className="space-y-2">
+            <h1 className="text-3xl md:text-4xl font-bold text-[var(--text-primary)] tracking-tight leading-tight">
+              Describe any situation.
+              <br />
+              <span className="text-[var(--color-accent-500)]">Get a complete cart instantly.</span>
+            </h1>
+            <p className="text-base text-[var(--text-muted)] leading-relaxed max-w-xl">
+              Tell us what&apos;s happening — a dinner party, a camping trip, a recipe you&apos;re cooking — and AI assembles the perfect cart in seconds.
+            </p>
+          </div>
+
+          {/* Trust signals */}
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-1.5 text-sm text-[var(--color-success-text)]">
+              <Clock className="h-4 w-4" />
+              <span className="font-medium">10–15 min delivery</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-sm text-[var(--text-muted)]">
+              <ShieldCheck className="h-4 w-4 text-[var(--color-success-text)]" />
+              <span>Free delivery over ₹499</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-sm text-[var(--text-muted)]">
+              <Zap className="h-4 w-4 text-[var(--color-shop-500)]" />
+              <span>AI-curated, every time</span>
+            </div>
+          </div>
+
+          {/* Household profile */}
+          <HouseholdProfilePanel onProfileChange={setHouseholdProfile} />
+
+          {/* Error */}
+          {error && (
+            <ErrorBanner
+              message={error}
+              onRetry={() => { if (inputValue) handleSubmit(inputValue); }}
+              onDismiss={() => setError(null)}
+            />
+          )}
+
+          {/* Input + voice */}
+          <div className="flex items-start gap-3">
+            <div className="flex-1">
+              <SituationInput
+                onSubmit={handleSubmit}
+                isLoading={isLoading}
+                value={inputValue}
+                onChange={setInputValue}
+              />
+            </div>
+            <div className="pt-1">
+              <VoiceButton onTranscription={setInputValue} disabled={isLoading} />
+            </div>
+          </div>
+        </div>
+
+        {/* Loading — below hero */}
+        {isLoading && (
+          <div className="mt-6">
+            <LoadingState />
           </div>
         )}
-
-        <div className="flex items-start gap-3">
-          <div className="flex-1">
-            <SituationInput
-              onSubmit={handleSubmit}
-              isLoading={isLoading}
-              value={inputValue}
-              onChange={setInputValue}
-            />
-          </div>
-          <div className="pt-6">
-            <VoiceButton onTranscription={setInputValue} disabled={isLoading} />
-          </div>
-        </div>
-
-        {isLoading && <div className="mt-6"><LoadingState /></div>}
       </section>
 
-      {/* Divider */}
-      <div className="border-t border-[#D5D9D9] my-6" />
+      {/* ── Divider ── */}
+      <div className="flex items-center gap-4">
+        <div className="flex-1 h-px bg-[var(--border-default)]" />
+        <span className="text-xs text-[var(--text-muted)] font-semibold uppercase tracking-widest">
+          or browse products
+        </span>
+        <div className="flex-1 h-px bg-[var(--border-default)]" />
+      </div>
 
-      {/* Browse Section */}
+      {/* ── Product catalog ── */}
       <section>
-        <h2 className="text-xl font-bold text-[#131A22] mb-4">🛒 Browse Products</h2>
+        <div className="flex items-baseline justify-between mb-6">
+          <div>
+            <h2 className="text-xl font-bold text-[var(--text-primary)] tracking-tight">
+              Browse Products
+            </h2>
+            <p className="text-sm text-[var(--text-muted)] mt-1">
+              Add items directly to your cart
+            </p>
+          </div>
+        </div>
         <ProductCatalog onAddToCart={handleAddProduct} cartItemNames={cartItemNames} />
       </section>
 
-      {/* Session History */}
-      <section className="mt-8">
+      {/* ── Session history ── */}
+      <section>
         <SessionHistory userId={userId} />
       </section>
     </div>
